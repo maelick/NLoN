@@ -18,7 +18,7 @@ static TRAILING_CODE_CHAR_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[){;]$")
 static TRAILING_PUNCTUATION_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[.!?:,]$").expect("regex didn't compile"));
 static STARTS_WITH_THREE_LETTERS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("^\\s*[a-zA-Z]{3}").expect("regex didn't compile"));
 
-fn count_stopwords(tokens: Vec<&str>, stopwords: HashSet<&str>) -> usize {
+fn count_stopwords(tokens: Vec<&str>, stopwords: &HashSet<&str>) -> usize {
     tokens.iter().filter(|s| stopwords.contains(s as &str)).count()
 }
 
@@ -46,7 +46,7 @@ pub fn numbers_ratio(s: &str) -> f64 {
     numbers_count(s) as f64 / s.len() as f64
 }
 
-pub fn stopwords_ratio(s: &str, tokenize: TokenizeFunc, stopwords: HashSet<&str>) -> usize {
+pub fn stopwords_ratio(s: &str, tokenize: TokenizeFunc, stopwords: &HashSet<&str>) -> usize {
     let tokens = tokenize(s);
     count_stopwords(tokens, stopwords) / words_count(s)
 }
@@ -87,7 +87,7 @@ mod tests {
     fn test_count_stopwords() {
         let tokens = vec!["Hello", "World"];
         let stopwords = vec!["World"].into_iter().collect();
-        assert_eq!(count_stopwords(tokens, stopwords), 1);
+        assert_eq!(count_stopwords(tokens, &stopwords), 1);
     }
 
     #[test]
