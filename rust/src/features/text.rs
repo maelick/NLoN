@@ -42,6 +42,11 @@ impl<'a> LegacyTextFeatureGenerator<'a> {
         Ok(s.with_name("stopwords_ratio"))
     }
 
+    fn stopwords_ratio2(&self, s: &Series) -> PolarsResult<Series> {
+        let s: Series = map_series(s, |s| regex::stopwords_ratio(s, tokenizers::tokenize2, &self.stopwords))?.collect();
+        Ok(s.with_name("stopwords_ratio2"))
+    }
+
     fn average_word_length(&self, s: &Series) -> PolarsResult<Series> {
         let s: Series = map_series(s, regex::average_word_length)?.collect();
         Ok(s.with_name("average_word_length"))
@@ -79,6 +84,7 @@ impl<'a> LegacyTextFeatureGenerator<'a> {
             self.numbers_ratio(s)?,
             self.average_word_length(s)?,
             self.stopwords_ratio(s)?,
+            self.stopwords_ratio2(s)?,
             self.ends_with_code_char(s)?,
             self.ends_with_punctuation(s)?,
             self.starts_with_three_letters(s)?,
