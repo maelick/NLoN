@@ -1,13 +1,11 @@
-use std::collections::HashSet;
+use nlon_rust::features::text::LegacyTextFeatureGenerator;
 
 fn main() {
-    let s = "Hello, world!";
-    println!("{}", s);
-    let mut stopwords = HashSet::new();
-    stopwords.insert("Hello");
-    let tokens = nlon_rust::features::regex::tokenize1("Hello world!");
-    println!("{}", tokens.join("\n"));
-    println!("{}", nlon_rust::features::regex::count_stopwords(tokens, stopwords));
-    let data = nlon_rust::data::read_data();
+    let stopwords = vec!["World"].into_iter().collect();
+    let generator = LegacyTextFeatureGenerator::new(stopwords);
+    let data = nlon_rust::data::read_data().expect("Failed to read data");
     println!("{:?}", data);
+    let text = data.column("text").unwrap();
+    let features = generator.generate(text).unwrap();
+    println!("{:?}", features);
 }
