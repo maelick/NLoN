@@ -1,38 +1,39 @@
 use std::path::Path;
-use polars_core::prelude::*;
-use polars_io::prelude::*;
+use std::collections::HashSet;
+use polars::prelude::*;
 
-const data_dirname: &str = "../data-raw";
+const DATA_DIRNAME: &str = "../data-raw";
 
-const kubernetes_raw_data_filename: &str = "lines.10k.cfo.sample.2000 - Kubernetes (Slackarchive.io).csv";
-const kubernetes_data_filename: &str = "kubernetes.csv";
+const KUBERNETES_RAW_DATA_FILENAME: &str = "lines.10k.cfo.sample.2000 - Kubernetes (Slackarchive.io).csv";
+const KUBERNETES_DATA_FILENAME: &str = "kubernetes.csv";
 
-const lucene_raw_data_filename: &str = "lines.10k.cfo.sample.2000 - Lucene-dev mailing list.csv";
-const lucene_data_filename: &str = "lucene.csv";
+const LUCENE_RAW_DATA_FILENAME: &str = "lines.10k.cfo.sample.2000 - Lucene-dev mailing list.csv";
+const LUCENE_DATA_FILENAME: &str = "lucene.csv";
 
-const mozilla_raw_data_filename: &str = "lines.10k.cfo.sample.2000 - Mozilla (Firefox, Core, OS).csv";
-const mozilla_data_filename: &str = "mozilla.csv";
+const MOZILLA_RAW_DATA_FILENAME: &str = "lines.10k.cfo.sample.2000 - Mozilla (Firefox, Core, OS).csv";
+const MOZILLA_DATA_FILENAME: &str = "mozilla.csv";
 
-const extdata_dirname: &str = "../inst/extdata";
-const stopwords_filename: &str = "mysql_sw_wo_code_words.txt";
+const EXTDATA_DIRNAME: &str = "../inst/extdata";
+const STOPWORDS_FILENAME: &str = "mysql_sw_wo_code_words.txt";
 
 pub fn read_data() -> PolarsResult<(DataFrame, DataFrame, DataFrame)> {
-    let kubernetes_data = read_data_file(kubernetes_data_filename)?;
-    let lucene_data = read_data_file(lucene_data_filename)?;
-    let mozilla_data = read_data_file(mozilla_data_filename)?;
-    Ok((kubernetes_raw_data, lucene_raw_data, mozilla_raw_data))
+    let kubernetes_data = read_data_file(KUBERNETES_DATA_FILENAME)?;
+    let lucene_data = read_data_file(LUCENE_DATA_FILENAME)?;
+    let mozilla_data = read_data_file(MOZILLA_DATA_FILENAME)?;
+    Ok((kubernetes_data, lucene_data, mozilla_data))
 }
 
-pub fn read_stopwords(filename: &str) -> PolarsResult<HashSet<String>> {
-    let filename = Path::new(extdata_dirname).join(filename);
+pub fn read_stopwords() -> PolarsResult<HashSet<String>> {
+    let filename = Path::new(EXTDATA_DIRNAME).join(STOPWORDS_FILENAME);
     let stopwords = std::fs::read_to_string(filename)?;
     Ok(stopwords.lines().map(|s| s.to_string()).collect())
 }
 
 fn read_data_file(filename: &str) -> PolarsResult<DataFrame> {
-    let filename = Path::new(data_dirname).join(filename);
+    let filename = Path::new(DATA_DIRNAME).join(filename);
+    let filename = filename.to_str().map(Into::into);
     CsvReadOptions::default()
             .with_has_header(true)
-            .try_into_reader_with_file_path(filename.to_str())?
+            .try_into_reader_with_file_path(filename)?
             .finish()
 }
