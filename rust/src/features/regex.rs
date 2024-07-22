@@ -2,17 +2,9 @@ use std::collections::HashSet;
 
 use regex::Regex;
 
+use super::tokenizers::TokenizeFunc;
+
 // https://github.com/M3SOulu/NLoN/blob/master/R/features.R
-
-pub fn tokenize1<'t>(s: &'t str) -> Vec<&'t str> {
-    let re = Regex::new("\\s+").expect("regex didn't compile");
-    return re.split(&s).collect();
-}
-
-pub fn tokenize2<'t>(s: &'t str) -> Vec<&'t str> {
-    let re = Regex::new("\\s+").expect("regex didn't compile");
-    return re.split(&s).collect();
-}
 
 pub fn count_stopwords(tokens: Vec<&str>, stopwords: HashSet<&str>) -> usize {
     tokens.iter().filter(|s| stopwords.contains(s as &str)).count()
@@ -45,13 +37,8 @@ pub fn numbersratio(s: &str) -> usize {
     numbers(s) / s.len()
 }
 
-pub fn stopwordsratio1(s: &str, stopwords: HashSet<&str>) -> usize {
-    let tokens = tokenize1(s);
-    count_stopwords(tokens, stopwords) / words(s)
-}
-
-pub fn stopwordsratio2(s: &str, stopwords: HashSet<&str>) -> usize {
-    let tokens = tokenize2(s);
+pub fn stopwords_ratio(s: &str, tokenize: TokenizeFunc, stopwords: HashSet<&str>) -> usize {
+    let tokens = tokenize(s);
     count_stopwords(tokens, stopwords) / words(s)
 }
 
