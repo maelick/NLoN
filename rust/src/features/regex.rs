@@ -46,13 +46,13 @@ pub fn numbers_ratio(s: &str) -> f64 {
     numbers_count(s) as f64 / s.len() as f64
 }
 
-pub fn stopwords_ratio(s: &str, tokenize: TokenizeFunc, stopwords: &HashSet<&str>) -> usize {
+pub fn stopwords_ratio(s: &str, tokenize: TokenizeFunc, stopwords: &HashSet<&str>) -> f64 {
     let tokens = tokenize(s);
-    count_stopwords(tokens, stopwords) / words_count(s)
+    count_stopwords(tokens, stopwords) as f64 / words_count(s) as f64
 }
 
 fn words_count(s: &str) -> usize {
-    WORDS_REGEX.find_iter(s).count() + 1
+    WORDS_REGEX.find_iter(s).count()
 }
 
 pub fn average_word_length(s: &str) -> f64 {

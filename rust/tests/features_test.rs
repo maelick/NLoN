@@ -30,13 +30,13 @@ fn test_numbersratio() {
 #[test]
 fn test_stopwordsratio1() {
     let stopwords = vec!["World"].into_iter().collect();
-    assert_eq!(features::regex::stopwords_ratio("Hello World!", features::tokenizers::tokenize1, &stopwords), 1 / 2);
+    assert_eq!(features::regex::stopwords_ratio("Hello World", features::tokenizers::tokenize1, &stopwords), 0.5);
 }
 
 #[test]
 fn test_stopwordsratio2() {
     let stopwords = vec!["World"].into_iter().collect();
-    assert_eq!(features::regex::stopwords_ratio("Hello World!", features::tokenizers::tokenize2, &stopwords), 1 / 2);
+    assert_eq!(features::regex::stopwords_ratio("Hello World", features::tokenizers::tokenize2, &stopwords), 0.5);
 }
 
 #[test]
