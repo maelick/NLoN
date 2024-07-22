@@ -73,8 +73,8 @@ pub fn starts_with_three_letters(s: &str) -> bool {
     STARTS_WITH_THREE_LETTERS_REGEX.is_match(s)
 }
 
-pub fn emoticons_count(s: &str) -> usize {
-    EMOTICONS_REGEX.find_iter(s).count()
+pub fn emoticons_count(s: &str) -> i64 {
+    EMOTICONS_REGEX.find_iter(s).count() as i64
 }
 
 pub fn starts_with_at(s: &str) -> bool {
