@@ -6,78 +6,105 @@ use super::tokenizers::TokenizeFunc;
 
 // https://github.com/M3SOulu/NLoN/blob/master/R/features.R
 
-pub fn count_stopwords(tokens: Vec<&str>, stopwords: HashSet<&str>) -> usize {
+fn count_stopwords(tokens: Vec<&str>, stopwords: HashSet<&str>) -> usize {
     tokens.iter().filter(|s| stopwords.contains(s as &str)).count()
 }
 
-pub fn caps(s: &str) -> usize {
+fn caps_count(s: &str) -> usize {
     let re = Regex::new("[A-Z]").expect("regex didn't compile");
     re.find_iter(s).count()
 }
 
-pub fn specialchars(s: &str) -> usize {
+fn special_chars_count(s: &str) -> usize {
     let re = Regex::new("[^a-zA-Z\\d\\s]").expect("regex didn't compile");
     re.find_iter(s).count()
 }
 
-pub fn numbers(s: &str) -> usize {
+fn numbers_count(s: &str) -> usize {
     let re = Regex::new("[\\d]").expect("regex didn't compile");
     re.find_iter(s).count()
 }
 
-pub fn capsratio(s: &str) -> usize {
-    caps(s) / s.len()
+pub fn caps_ratio(s: &str) -> f64 {
+    caps_count(s) as f64 / s.len() as f64
 }
 
-pub fn specialcharsratio(s: &str) -> usize {
-    specialchars(s) / s.len()
+pub fn special_chars_ratio(s: &str) -> f64 {
+    special_chars_count(s) as f64 / s.len() as f64
 }
 
-pub fn numbersratio(s: &str) -> usize {
-    numbers(s) / s.len()
+pub fn numbers_ratio(s: &str) -> f64 {
+    numbers_count(s) as f64 / s.len() as f64
 }
 
 pub fn stopwords_ratio(s: &str, tokenize: TokenizeFunc, stopwords: HashSet<&str>) -> usize {
     let tokens = tokenize(s);
-    count_stopwords(tokens, stopwords) / words(s)
+    count_stopwords(tokens, stopwords) / words_count(s)
 }
 
-pub fn words(s: &str) -> usize {
+fn words_count(s: &str) -> usize {
     let re = Regex::new("[\\s+]").expect("regex didn't compile");
     re.find_iter(s).count() + 1
 }
 
-pub fn averagewordlength(s: &str) -> usize {
-    s.len() / words(s)
+pub fn average_word_length(s: &str) -> f64 {
+    s.len() as f64 / words_count(s) as f64
 }
 
-pub fn lastcharcode(s: &str) {
+pub fn ends_with_code_char(s: &str) -> bool {
     let re1 = Regex::new("(:-\\)|;-\\)|:\\)|;\\)|:-\\(|:\\()$").expect("regex didn't compile");
     let re2 = Regex::new("[){;]$").expect("regex didn't compile");
-    println!("LastCharCode")
+    !re1.is_match(s) && re2.is_match(s)
 }
 
-pub fn lastcharnl(s: &str) {
+pub fn ends_with_punctuation(s: &str) -> bool {
     let re = Regex::new("\\.$|\\!$|\\?$|:$|,$").expect("regex didn't compile");
-    println!("LastCharNL")
+    re.is_match(s)
 }
 
-pub fn first3chars(s: &str) -> &str {
-    let re = Regex::new("\\s").expect("regex didn't compile");
-    return s
+pub fn starts_with_three_letters(s: &str) -> bool {
+    let re = Regex::new("^\\s*[a-zA-Z]{3}").expect("regex didn't compile");
+    re.is_match(s)
 }
 
-pub fn first3charsletters(s: &str) -> usize {
-    let re = Regex::new("[a-zA-Z]").expect("regex didn't compile");
-    re.find_iter(first3chars(s)).count()
-}
-
-pub fn emoticons(s: &str) -> usize {
+pub fn emoticons_count(s: &str) -> usize {
     let re = Regex::new(":-\\)|;-\\)|:\\)|;\\)|:-\\(|:\\(").expect("regex didn't compile");
     re.find_iter(s).count()
 }
 
-pub fn startwithat(s: &str) -> bool {
+pub fn starts_with_at(s: &str) -> bool {
     let re = Regex::new("^@").expect("regex didn't compile");
     re.is_match(s)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_count_stopwords() {
+        let tokens = vec!["Hello", "World"];
+        let stopwords = vec!["World"].into_iter().collect();
+        assert_eq!(count_stopwords(tokens, stopwords), 1);
+    }
+
+    #[test]
+    fn test_caps() {
+        assert_eq!(caps_count("Hello World!"), 2);
+    }
+
+    #[test]
+    fn test_specialchars() {
+        assert_eq!(special_chars_count("Hello World!"), 1);
+    }
+
+    #[test]
+    fn test_numbers() {
+        assert_eq!(numbers_count("Hello World! 123"), 3);
+    }
+
+    #[test]
+    fn test_words() {
+        assert_eq!(words_count("Hello World!"), 2);
+    }
 }
