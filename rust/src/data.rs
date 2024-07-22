@@ -16,11 +16,11 @@ const MOZILLA_DATA_FILENAME: &str = "mozilla.csv";
 const EXTDATA_DIRNAME: &str = "../inst/extdata";
 const STOPWORDS_FILENAME: &str = "mysql_sw_wo_code_words.txt";
 
-pub fn read_data() -> PolarsResult<(DataFrame, DataFrame, DataFrame)> {
+pub fn read_data() -> PolarsResult<DataFrame> {
     let kubernetes_data = read_data_file(KUBERNETES_DATA_FILENAME)?;
     let lucene_data = read_data_file(LUCENE_DATA_FILENAME)?;
     let mozilla_data = read_data_file(MOZILLA_DATA_FILENAME)?;
-    Ok((kubernetes_data, lucene_data, mozilla_data))
+    mozilla_data.vstack(&kubernetes_data)?.vstack(&lucene_data)
 }
 
 pub fn read_stopwords() -> PolarsResult<HashSet<String>> {

@@ -8,4 +8,6 @@ fn main() {
     let tokens = nlon_rust::features::regex::tokenize1("Hello world!");
     println!("{}", tokens.join("\n"));
     println!("{}", nlon_rust::features::regex::count_stopwords(tokens, stopwords));
+    let data = nlon_rust::data::read_data();
+    println!("{:?}", data);
 }
