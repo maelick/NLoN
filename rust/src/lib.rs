@@ -1,6 +1,3 @@
-pub mod features {
-    pub mod regex;
-    pub mod tokenizers;
-}
+pub mod features;
 
 pub mod data;
