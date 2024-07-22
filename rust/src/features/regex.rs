@@ -1,28 +1,37 @@
 use std::collections::HashSet;
 
 use regex::Regex;
+use once_cell::sync::Lazy;
 
 use super::tokenizers::TokenizeFunc;
 
 // https://github.com/M3SOulu/NLoN/blob/master/R/features.R
+
+static CAPS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[A-Z]").expect("regex didn't compile"));
+static SPECIAL_CHARS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[^a-zA-Z\\d\\s]").expect("regex didn't compile"));
+static NUMBERS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("\\d").expect("regex didn't compile"));
+static WORDS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("\\w+").expect("regex didn't compile"));
+const EMOTICONS: &str = ":-\\)|;-\\)|:\\)|;\\)|:-\\(|:\\(";
+static EMOTICONS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(EMOTICONS).expect("regex didn't compile"));
+static TRAILING_EMOTICONS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(format!("{}$", EMOTICONS).as_str()).expect("regex didn't compile"));
+static TRAILING_CODE_CHAR_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[){;]$").expect("regex didn't compile"));
+static TRAILING_PUNCTUATION_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[.!?:,]$").expect("regex didn't compile"));
+static STARTS_WITH_THREE_LETTERS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("^\\s*[a-zA-Z]{3}").expect("regex didn't compile"));
 
 fn count_stopwords(tokens: Vec<&str>, stopwords: HashSet<&str>) -> usize {
     tokens.iter().filter(|s| stopwords.contains(s as &str)).count()
 }
 
 fn caps_count(s: &str) -> usize {
-    let re = Regex::new("[A-Z]").expect("regex didn't compile");
-    re.find_iter(s).count()
+    CAPS_REGEX.find_iter(s).count()
 }
 
 fn special_chars_count(s: &str) -> usize {
-    let re = Regex::new("[^a-zA-Z\\d\\s]").expect("regex didn't compile");
-    re.find_iter(s).count()
+    SPECIAL_CHARS_REGEX.find_iter(s).count()
 }
 
 fn numbers_count(s: &str) -> usize {
-    let re = Regex::new("[\\d]").expect("regex didn't compile");
-    re.find_iter(s).count()
+    NUMBERS_REGEX.find_iter(s).count()
 }
 
 pub fn caps_ratio(s: &str) -> f64 {
@@ -43,8 +52,7 @@ pub fn stopwords_ratio(s: &str, tokenize: TokenizeFunc, stopwords: HashSet<&str>
 }
 
 fn words_count(s: &str) -> usize {
-    let re = Regex::new("[\\s+]").expect("regex didn't compile");
-    re.find_iter(s).count() + 1
+    WORDS_REGEX.find_iter(s).count() + 1
 }
 
 pub fn average_word_length(s: &str) -> f64 {
@@ -52,29 +60,23 @@ pub fn average_word_length(s: &str) -> f64 {
 }
 
 pub fn ends_with_code_char(s: &str) -> bool {
-    let re1 = Regex::new("(:-\\)|;-\\)|:\\)|;\\)|:-\\(|:\\()$").expect("regex didn't compile");
-    let re2 = Regex::new("[){;]$").expect("regex didn't compile");
-    !re1.is_match(s) && re2.is_match(s)
+    !TRAILING_EMOTICONS_REGEX.is_match(s) && TRAILING_CODE_CHAR_REGEX.is_match(s)
 }
 
 pub fn ends_with_punctuation(s: &str) -> bool {
-    let re = Regex::new("\\.$|\\!$|\\?$|:$|,$").expect("regex didn't compile");
-    re.is_match(s)
+    TRAILING_PUNCTUATION_REGEX.is_match(s)
 }
 
 pub fn starts_with_three_letters(s: &str) -> bool {
-    let re = Regex::new("^\\s*[a-zA-Z]{3}").expect("regex didn't compile");
-    re.is_match(s)
+    STARTS_WITH_THREE_LETTERS_REGEX.is_match(s)
 }
 
 pub fn emoticons_count(s: &str) -> usize {
-    let re = Regex::new(":-\\)|;-\\)|:\\)|;\\)|:-\\(|:\\(").expect("regex didn't compile");
-    re.find_iter(s).count()
+    EMOTICONS_REGEX.find_iter(s).count()
 }
 
 pub fn starts_with_at(s: &str) -> bool {
-    let re = Regex::new("^@").expect("regex didn't compile");
-    re.is_match(s)
+    s.starts_with('@')
 }
 
 #[cfg(test)]

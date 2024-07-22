@@ -516,6 +516,7 @@ dependencies = [
 name = "nlon-rust"
 version = "0.1.0"
 dependencies = [
+ "once_cell",
  "polars",
  "regex",
 ]
