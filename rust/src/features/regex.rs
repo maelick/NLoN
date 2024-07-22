@@ -10,7 +10,8 @@ use super::tokenizers::TokenizeFunc;
 static CAPS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[A-Z]").expect("regex didn't compile"));
 static SPECIAL_CHARS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[^a-zA-Z\\d\\s]").expect("regex didn't compile"));
 static NUMBERS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("\\d").expect("regex didn't compile"));
-static WORDS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("\\w+").expect("regex didn't compile"));
+static _WORDS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("\\w").expect("regex didn't compile"));
+static WORD_SEP_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("\\s+").expect("regex didn't compile"));
 const EMOTICONS: &str = ":-\\)|;-\\)|:\\)|;\\)|:-\\(|:\\(";
 static EMOTICONS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(EMOTICONS).expect("regex didn't compile"));
 static TRAILING_EMOTICONS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(format!("{}$", EMOTICONS).as_str()).expect("regex didn't compile"));
@@ -52,7 +53,8 @@ pub fn stopwords_ratio(s: &str, tokenize: TokenizeFunc, stopwords: &HashSet<&str
 }
 
 fn words_count(s: &str) -> usize {
-    WORDS_REGEX.find_iter(s).count()
+    // WORDS_REGEX.find_iter(s).count()
+    WORD_SEP_REGEX.find_iter(s).count() + 1
 }
 
 pub fn average_word_length(s: &str) -> f64 {
