@@ -10,8 +10,8 @@ use super::tokenizers::TokenizeFunc;
 static CAPS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[A-Z]").expect("regex didn't compile"));
 static SPECIAL_CHARS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[^a-zA-Z\\d\\s]").expect("regex didn't compile"));
 static NUMBERS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("\\d").expect("regex didn't compile"));
-static _WORDS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("\\w").expect("regex didn't compile"));
-static WORD_SEP_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("\\s+").expect("regex didn't compile"));
+pub static WORDS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("\\w+").expect("regex didn't compile"));
+pub static WORD_SEP_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("\\s+").expect("regex didn't compile"));
 const EMOTICONS: &str = ":-\\)|;-\\)|:\\)|;\\)|:-\\(|:\\(";
 static EMOTICONS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(EMOTICONS).expect("regex didn't compile"));
 static TRAILING_EMOTICONS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(format!("{}$", EMOTICONS).as_str()).expect("regex didn't compile"));
@@ -19,7 +19,7 @@ static TRAILING_CODE_CHAR_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[){;]$")
 static TRAILING_PUNCTUATION_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[.!?:,]$").expect("regex didn't compile"));
 static STARTS_WITH_THREE_LETTERS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("^\\s*[a-zA-Z]{3}").expect("regex didn't compile"));
 
-fn stopwords_count(tokens: Vec<&str>, stopwords: &HashSet<String>) -> usize {
+fn stopwords_count(tokens: Vec<String>, stopwords: &HashSet<String>) -> usize {
     tokens.iter().filter(|s| stopwords.contains(&s.to_string())).count()
 }
 
@@ -86,14 +86,17 @@ mod tests {
     use super::*;
     use super::super::tokenizers;
 
-    fn stopwords(words: Vec<&str>) -> HashSet<String> {
+    fn to_string_col<T>(words: Vec<&str>) -> T
+    where
+        T: FromIterator<String>
+    {
         words.into_iter().map(|s| s.to_string()).collect()
     }
 
     #[test]
     fn test_stopwords_count() {
-        let tokens = vec!["hello", "world"];
-        let stopwords = stopwords(vec!["world", "peekaboo"]);
+        let tokens = to_string_col(vec!["hello", "world"]);
+        let stopwords = to_string_col(vec!["world", "peekaboo"]);
         assert_eq!(stopwords_count(tokens, &stopwords), 1);
     }
 
@@ -134,13 +137,13 @@ mod tests {
 
     #[test]
     fn test_stopwords_ratio1() {
-        let stopwords = stopwords(vec!["world", "peekaboo"]);
+        let stopwords = to_string_col(vec!["world", "peekaboo"]);
         assert_eq!(stopwords_ratio("Hello World", tokenizers::tokenize1, &stopwords), 0.5);
     }
 
     #[test]
     fn test_stopwords_ratio2() {
-        let stopwords = stopwords(vec!["world", "peekaboo"]);
+        let stopwords = to_string_col(vec!["world", "peekaboo"]);
         assert_eq!(stopwords_ratio("Hello World", tokenizers::tokenize2, &stopwords), 0.5);
     }
 
