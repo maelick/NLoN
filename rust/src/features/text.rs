@@ -3,8 +3,8 @@ use polars::prelude::*;
 use super::regex;
 use super::tokenizers;
 
-pub struct LegacyTextFeatureGenerator<'a> {
-    stopwords: HashSet<&'a str>,
+pub struct LegacyTextFeatureGenerator {
+    stopwords: HashSet<String>,
 }
 
 fn map_series<'b, F, T>(s: &'b Series, f: F) -> PolarsResult<impl Iterator<Item = T> + 'b>
@@ -17,8 +17,8 @@ where
     Ok(iter)
 }
 
-impl<'a> LegacyTextFeatureGenerator<'a> {
-    pub fn new(stopwords: HashSet<&'a str>) -> Self {
+impl LegacyTextFeatureGenerator {
+    pub fn new(stopwords: HashSet<String>) -> Self {
         Self { stopwords }
     }
 

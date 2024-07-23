@@ -19,8 +19,8 @@ static TRAILING_CODE_CHAR_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[){;]$")
 static TRAILING_PUNCTUATION_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[.!?:,]$").expect("regex didn't compile"));
 static STARTS_WITH_THREE_LETTERS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("^\\s*[a-zA-Z]{3}").expect("regex didn't compile"));
 
-fn stopwords_count(tokens: Vec<&str>, stopwords: &HashSet<&str>) -> usize {
-    tokens.iter().filter(|s| stopwords.contains(s as &str)).count()
+fn stopwords_count(tokens: Vec<&str>, stopwords: &HashSet<String>) -> usize {
+    tokens.iter().filter(|s| stopwords.contains(&s.to_string())).count()
 }
 
 fn caps_count(s: &str) -> usize {
@@ -47,7 +47,7 @@ pub fn numbers_ratio(s: &str) -> f64 {
     numbers_count(s) as f64 / s.len() as f64
 }
 
-pub fn stopwords_ratio(s: &str, tokenize: TokenizeFunc, stopwords: &HashSet<&str>) -> f64 {
+pub fn stopwords_ratio(s: &str, tokenize: TokenizeFunc, stopwords: &HashSet<String>) -> f64 {
     let tokens = tokenize(s);
     stopwords_count(tokens, stopwords) as f64 / words_count(s) as f64
 }
@@ -86,10 +86,14 @@ mod tests {
     use super::*;
     use super::super::tokenizers;
 
+    fn stopwords(words: Vec<&str>) -> HashSet<String> {
+        words.into_iter().map(|s| s.to_string()).collect()
+    }
+
     #[test]
     fn test_stopwords_count() {
         let tokens = vec!["Hello", "World"];
-        let stopwords = vec!["World", "Peekaboo"].into_iter().collect();
+        let stopwords = stopwords(vec!["World", "Peekaboo"]);
         assert_eq!(stopwords_count(tokens, &stopwords), 1);
     }
 
@@ -130,13 +134,13 @@ mod tests {
 
     #[test]
     fn test_stopwords_ratio1() {
-        let stopwords = vec!["World"].into_iter().collect();
+        let stopwords = stopwords(vec!["World", "Peekaboo"]);
         assert_eq!(stopwords_ratio("Hello World", tokenizers::tokenize1, &stopwords), 0.5);
     }
 
     #[test]
     fn test_stopwords_ratio2() {
-        let stopwords = vec!["World"].into_iter().collect();
+        let stopwords = stopwords(vec!["World", "Peekaboo"]);
         assert_eq!(stopwords_ratio("Hello World", tokenizers::tokenize2, &stopwords), 0.5);
     }
 
