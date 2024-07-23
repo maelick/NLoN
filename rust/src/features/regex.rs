@@ -129,8 +129,6 @@ mod tests {
         run_tests(&inputs, &expected, |s| words_count(s));
     }
 
-
-
     #[test]
     fn test_ends_with_code_char() {
         let inputs = vec!["", "This is text.", "func(x, y);", "if (true) {",
