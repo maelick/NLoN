@@ -53,11 +53,13 @@ pub fn stopwords_ratio(s: &str, tokenize: TokenizeFunc, stopwords: &HashSet<Stri
 }
 
 fn words_count(s: &str) -> usize {
+    // FIXME
     // WORDS_REGEX.find_iter(s).count()
     WORD_SEP_REGEX.find_iter(s).count() + 1
 }
 
 pub fn average_word_length(s: &str) -> f64 {
+    // FIXME use average of token len instead
     s.len() as f64 / words_count(s) as f64
 }
 
