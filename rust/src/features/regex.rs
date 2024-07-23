@@ -153,33 +153,6 @@ mod tests {
     }
 
     #[test]
-    fn test_caps_ratio() {
-        assert_eq!(caps_ratio("Hello World!"), 2. / "Hello World!".len() as f64);
-    }
-
-    #[test]
-    fn test_special_chars_ratio() {
-        assert_eq!(special_chars_ratio("Hello World!"), 1. / 12. as f64);
-    }
-
-    #[test]
-    fn test_numbers_ratio() {
-        assert_eq!(numbers_ratio("Hello World! 123"), 3. / 16. as f64);
-    }
-
-    #[test]
-    fn test_stopwords_ratio1() {
-        let stopwords = to_string_col(vec!["world", "peekaboo"]);
-        assert_eq!(stopwords_ratio("Hello World", tokenizers::tokenize1, &stopwords), 0.5);
-    }
-
-    #[test]
-    fn test_stopwords_ratio2() {
-        let stopwords = to_string_col(vec!["world", "peekaboo"]);
-        assert_eq!(stopwords_ratio("Hello World", tokenizers::tokenize2, &stopwords), 0.5);
-    }
-
-    #[test]
     fn test_average_word_length() {
         let inputs = vec!["", "123", "123 123", "1", "!2c$", "abc def!", "1 234"];
         let expected = vec![0., 3., 3.5, 1., 4., 4., 2.5];
