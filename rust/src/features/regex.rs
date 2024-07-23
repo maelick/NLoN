@@ -92,8 +92,8 @@ mod tests {
 
     #[test]
     fn test_stopwords_count() {
-        let tokens = vec!["Hello", "World"];
-        let stopwords = stopwords(vec!["World", "Peekaboo"]);
+        let tokens = vec!["hello", "world"];
+        let stopwords = stopwords(vec!["world", "peekaboo"]);
         assert_eq!(stopwords_count(tokens, &stopwords), 1);
     }
 
@@ -124,23 +124,23 @@ mod tests {
 
     #[test]
     fn test_special_chars_ratio() {
-        assert_eq!(special_chars_ratio("Hello World!"), 1. / "Hello World!".len() as f64);
+        assert_eq!(special_chars_ratio("Hello World!"), 1. / 12. as f64);
     }
 
     #[test]
     fn test_numbers_ratio() {
-        assert_eq!(numbers_ratio("Hello World! 123"), 3. / "Hello World! 123".len() as f64);
+        assert_eq!(numbers_ratio("Hello World! 123"), 3. / 16. as f64);
     }
 
     #[test]
     fn test_stopwords_ratio1() {
-        let stopwords = stopwords(vec!["World", "Peekaboo"]);
+        let stopwords = stopwords(vec!["world", "peekaboo"]);
         assert_eq!(stopwords_ratio("Hello World", tokenizers::tokenize1, &stopwords), 0.5);
     }
 
     #[test]
     fn test_stopwords_ratio2() {
-        let stopwords = stopwords(vec!["World", "Peekaboo"]);
+        let stopwords = stopwords(vec!["world", "peekaboo"]);
         assert_eq!(stopwords_ratio("Hello World", tokenizers::tokenize2, &stopwords), 0.5);
     }
 
