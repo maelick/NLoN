@@ -125,22 +125,31 @@ mod tests {
 
     #[test]
     fn test_caps_count() {
-        assert_eq!(caps_count("Hello World!"), 2);
+        let inputs = vec!["", "text", "123", "!@#$", "This is some text.", "A", "ABC", "aaABCaa"];
+        let expected = vec![0, 0, 0, 0, 1, 1, 3, 3];
+        run_tests(&inputs, &expected, caps_count);
     }
 
     #[test]
     fn test_special_chars_count() {
-        assert_eq!(special_chars_count("Hello World!"), 1);
+        let inputs = vec!["", "text", "123", "!@#$", "This is some text.", "x-y", "test;", "just some text"];
+        let expected = vec![0, 0, 0, 4, 1, 1, 1, 0];
+        run_tests(&inputs, &expected, special_chars_count);
     }
 
     #[test]
     fn test_numbers_count() {
-        assert_eq!(numbers_count("Hello World! 123"), 3);
+        let inputs = vec!["", "text", "123", "!@#$", "This is some text.", "There is 1 number."];
+        let expected = vec![0, 0, 3, 0, 0, 1];
+        run_tests(&inputs, &expected, numbers_count);
     }
 
     #[test]
     fn test_words_count() {
-        assert_eq!(words_count("Hello World!"), 2);
+        let inputs = vec!["", "text", "123", "!@#$", "This is some text.", "one-word.", "abc!def"];
+        let expected = vec![1, 1, 1, 1, 4, 1, 1];
+        // FIXME: first one should be 0 -> need to use proper word count (or tokenizer?)
+        run_tests(&inputs, &expected, words_count);
     }
 
     #[test]
@@ -172,6 +181,8 @@ mod tests {
 
     #[test]
     fn test_average_word_length() {
-        assert_eq!(average_word_length("Hello World!"), "Hello World!".len() as f64 / 2.);
+        let inputs = vec!["", "123", "123 123", "1", "!2c$", "abc def!", "1 234"];
+        let expected = vec![0., 3., 3.5, 1., 4., 4., 2.5];
+        run_tests(&inputs, &expected, average_word_length);
     }
 }
