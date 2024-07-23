@@ -101,7 +101,7 @@ mod tests {
     {
         for (input, expected) in inputs.iter().zip(expected.iter()) {
             let value = func(input);
-            assert_eq!(value, *expected, "Failed for input: {}", input);
+            assert_eq!(value, *expected, "Failed for input: {} (got {:?}, expected {:?})", input, value, expected);
         }
     }
 
