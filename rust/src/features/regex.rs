@@ -17,7 +17,7 @@ static EMOTICONS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(EMOTICONS).expect(
 static TRAILING_EMOTICONS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(format!("{}$", EMOTICONS).as_str()).expect("regex didn't compile"));
 static TRAILING_CODE_CHAR_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[){;]$").expect("regex didn't compile"));
 static TRAILING_PUNCTUATION_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[.!?:,]$").expect("regex didn't compile"));
-static STARTS_WITH_THREE_LETTERS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("^\\s*[a-zA-Z]{3}").expect("regex didn't compile"));
+static STARTS_WITH_THREE_LETTERS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("^(\\s*[a-zA-Z]){3}").expect("regex didn't compile"));
 
 fn stopwords_count(tokens: Vec<String>, stopwords: &HashSet<String>) -> usize {
     tokens.iter().filter(|s| stopwords.contains(&s.to_string())).count()
