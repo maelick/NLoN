@@ -93,11 +93,32 @@ mod tests {
         words.into_iter().map(|s| s.to_string()).collect()
     }
 
+    fn run_tests<T>(inputs: &Vec<&str>, expected: &Vec<T>, func: impl Fn(&str) -> T)
+    where
+        T: PartialEq + std::fmt::Debug
+    {
+        for (input, expected) in inputs.iter().zip(expected.iter()) {
+            let value = func(input);
+            assert_eq!(value, *expected);
+        }
+    }
+
     #[test]
     fn test_stopwords_count() {
-        let tokens = to_string_col(vec!["hello", "world"]);
-        let stopwords = to_string_col(vec!["world", "peekaboo"]);
-        assert_eq!(stopwords_count(tokens, &stopwords), 1);
+        let stopwords = to_string_col(vec!["this", "is", "isn't", "some", "peekaboo"]);
+        let inputs = vec!["", "text", "123", "!@#$", "This is some text.", "This isn't some text.", "This is."];
+
+        // With tokenize1
+        let expected = vec![0, 0, 0, 0, 3, 3, 1];
+        run_tests(&inputs, &expected, |s| {
+            stopwords_count(tokenizers::tokenize1(s), &stopwords)
+        });
+
+        // With tokenize2
+        let expected = vec![0, 0, 0, 0, 3, 3, 2];
+        run_tests(&inputs, &expected, |s| {
+            stopwords_count(tokenizers::tokenize2(s), &stopwords)
+        });
     }
 
     #[test]
