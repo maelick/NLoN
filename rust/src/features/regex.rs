@@ -19,7 +19,7 @@ static TRAILING_CODE_CHAR_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[){;]$")
 static TRAILING_PUNCTUATION_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[.!?:,]$").expect("regex didn't compile"));
 static STARTS_WITH_THREE_LETTERS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("^\\s*[a-zA-Z]{3}").expect("regex didn't compile"));
 
-fn count_stopwords(tokens: Vec<&str>, stopwords: &HashSet<&str>) -> usize {
+fn stopwords_count(tokens: Vec<&str>, stopwords: &HashSet<&str>) -> usize {
     tokens.iter().filter(|s| stopwords.contains(s as &str)).count()
 }
 
@@ -49,7 +49,7 @@ pub fn numbers_ratio(s: &str) -> f64 {
 
 pub fn stopwords_ratio(s: &str, tokenize: TokenizeFunc, stopwords: &HashSet<&str>) -> f64 {
     let tokens = tokenize(s);
-    count_stopwords(tokens, stopwords) as f64 / words_count(s) as f64
+    stopwords_count(tokens, stopwords) as f64 / words_count(s) as f64
 }
 
 fn words_count(s: &str) -> usize {
@@ -84,31 +84,64 @@ pub fn starts_with_at(s: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use super::super::tokenizers;
 
     #[test]
-    fn test_count_stopwords() {
+    fn test_stopwords_count() {
         let tokens = vec!["Hello", "World"];
         let stopwords = vec!["World"].into_iter().collect();
-        assert_eq!(count_stopwords(tokens, &stopwords), 1);
+        assert_eq!(stopwords_count(tokens, &stopwords), 1);
     }
 
     #[test]
-    fn test_caps() {
+    fn test_caps_count() {
         assert_eq!(caps_count("Hello World!"), 2);
     }
 
     #[test]
-    fn test_specialchars() {
+    fn test_special_chars_count() {
         assert_eq!(special_chars_count("Hello World!"), 1);
     }
 
     #[test]
-    fn test_numbers() {
+    fn test_numbers_count() {
         assert_eq!(numbers_count("Hello World! 123"), 3);
     }
 
     #[test]
-    fn test_words() {
+    fn test_words_count() {
         assert_eq!(words_count("Hello World!"), 2);
+    }
+
+    #[test]
+    fn test_caps_ratio() {
+        assert_eq!(caps_ratio("Hello World!"), 2. / "Hello World!".len() as f64);
+    }
+
+    #[test]
+    fn test_special_chars_ratio() {
+        assert_eq!(special_chars_ratio("Hello World!"), 1. / "Hello World!".len() as f64);
+    }
+
+    #[test]
+    fn test_numbers_ratio() {
+        assert_eq!(numbers_ratio("Hello World! 123"), 3. / "Hello World! 123".len() as f64);
+    }
+
+    #[test]
+    fn test_stopwords_ratio1() {
+        let stopwords = vec!["World"].into_iter().collect();
+        assert_eq!(stopwords_ratio("Hello World", tokenizers::tokenize1, &stopwords), 0.5);
+    }
+
+    #[test]
+    fn test_stopwords_ratio2() {
+        let stopwords = vec!["World"].into_iter().collect();
+        assert_eq!(stopwords_ratio("Hello World", tokenizers::tokenize2, &stopwords), 0.5);
+    }
+
+    #[test]
+    fn test_average_word_length() {
+        assert_eq!(average_word_length("Hello World!"), "Hello World!".len() as f64 / 2.);
     }
 }
