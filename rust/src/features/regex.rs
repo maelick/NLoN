@@ -89,7 +89,7 @@ mod tests {
     #[test]
     fn test_stopwords_count() {
         let tokens = vec!["Hello", "World"];
-        let stopwords = vec!["World"].into_iter().collect();
+        let stopwords = vec!["World", "Peekaboo"].into_iter().collect();
         assert_eq!(stopwords_count(tokens, &stopwords), 1);
     }
 
