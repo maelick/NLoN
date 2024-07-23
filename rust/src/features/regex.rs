@@ -95,9 +95,10 @@ mod tests {
         words.into_iter().map(|s| s.to_string()).collect()
     }
 
-    fn run_tests<T>(inputs: &Vec<&str>, expected: &Vec<T>, func: impl Fn(&str) -> T)
+    fn run_tests<I, O>(inputs: &Vec<I>, expected: &Vec<O>, func: impl Fn(&I) -> O)
     where
-        T: PartialEq + std::fmt::Debug
+        I: std::fmt::Display,
+        O: PartialEq + std::fmt::Debug
     {
         for (input, expected) in inputs.iter().zip(expected.iter()) {
             let value = func(input);
@@ -127,21 +128,21 @@ mod tests {
     fn test_caps_count() {
         let inputs = vec!["", "text", "123", "!@#$", "This is some text.", "A", "ABC", "aaABCaa"];
         let expected = vec![0, 0, 0, 0, 1, 1, 3, 3];
-        run_tests(&inputs, &expected, caps_count);
+        run_tests(&inputs, &expected, |s| caps_count(s));
     }
 
     #[test]
     fn test_special_chars_count() {
         let inputs = vec!["", "text", "123", "!@#$", "This is some text.", "x-y", "test;", "just some text"];
         let expected = vec![0, 0, 0, 4, 1, 1, 1, 0];
-        run_tests(&inputs, &expected, special_chars_count);
+        run_tests(&inputs, &expected, |s| special_chars_count(s));
     }
 
     #[test]
     fn test_numbers_count() {
         let inputs = vec!["", "text", "123", "!@#$", "This is some text.", "There is 1 number."];
         let expected = vec![0, 0, 3, 0, 0, 1];
-        run_tests(&inputs, &expected, numbers_count);
+        run_tests(&inputs, &expected, |s| numbers_count(s));
     }
 
     #[test]
@@ -149,14 +150,14 @@ mod tests {
         let inputs = vec!["", "text", "123", "!@#$", "This is some text.", "one-word.", "abc!def"];
         let expected = vec![1, 1, 1, 1, 4, 1, 1];
         // FIXME: first one should be 0 -> need to use proper word count (or tokenizer?)
-        run_tests(&inputs, &expected, words_count);
+        run_tests(&inputs, &expected, |s| words_count(s));
     }
 
     #[test]
     fn test_average_word_length() {
         let inputs = vec!["", "123", "123 123", "1", "!2c$", "abc def!", "1 234"];
         let expected = vec![0., 3., 3.5, 1., 4., 4., 2.5];
-        run_tests(&inputs, &expected, average_word_length);
+        run_tests(&inputs, &expected, |s| average_word_length(s));
     }
 
     #[test]
@@ -164,14 +165,14 @@ mod tests {
         let inputs = vec!["", "This is text.", "func(x, y);", "if (true) {",
             "func()", ":-)", "Hello ;-)", ":)", ":-(", ":(", ":-))"];
         let expected = vec![false, false, true, true, true, false, false, false, false, false, true];
-        run_tests(&inputs, &expected, ends_with_code_char);
+        run_tests(&inputs, &expected, |s| ends_with_code_char(s));
     }
 
     #[test]
     fn test_ends_with_punctuation() {
         let inputs = vec!["", "abc", "1", ".", "!", "?", "? ", ":", ",", "Hello!!"];
         let expected = vec![false, false, false, true, true, true, false, true, true, true];
-        run_tests(&inputs, &expected, ends_with_punctuation);
+        run_tests(&inputs, &expected, |s| ends_with_punctuation(s));
     }
 
     #[test]
@@ -190,7 +191,7 @@ mod tests {
     fn test_starts_with_three_letters() {
         let inputs = vec!["", "a", "a  bcde", " abcde", "      abcde"];
         let expected = vec![false, false, true, true, true];
-        run_tests(&inputs, &expected, starts_with_three_letters);
+        run_tests(&inputs, &expected, |s| starts_with_three_letters(s));
     }
 
     #[test]
@@ -198,13 +199,13 @@ mod tests {
         let inputs = vec!["", "123", "abc", ":--)", ":-)", "Hello ;-)", "\":-)\";",
             ":)", ";)", ":-(", ":(", ":(:)", ":) :) :)", ":):(:"];
         let expected = vec![0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 2, 3, 2];
-        run_tests(&inputs, &expected, emoticons_count);
+        run_tests(&inputs, &expected, |s| emoticons_count(s));
     }
 
     #[test]
     fn test_starts_with_at() {
         let inputs = vec!["", "abc", "123", "!@#", "@abc", "@", " @"];
         let expected = vec![false, false, false, false, true, true, false];
-        run_tests(&inputs, &expected, starts_with_at);
+        run_tests(&inputs, &expected, |s| starts_with_at(s));
     }
 }
