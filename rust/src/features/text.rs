@@ -22,57 +22,57 @@ impl LegacyTextFeatureGenerator {
         Self { stopwords }
     }
 
-    fn caps_ratio(&self, s: &Series) -> PolarsResult<Series> {
+    pub fn caps_ratio(&self, s: &Series) -> PolarsResult<Series> {
         let s: Series = map_series(s, regex::caps_ratio)?.collect();
         Ok(s.with_name("caps_ratio"))
     }
 
-    fn special_chars_ratio(&self, s: &Series) -> PolarsResult<Series> {
+    pub fn special_chars_ratio(&self, s: &Series) -> PolarsResult<Series> {
         let s: Series = map_series(s, regex::special_chars_ratio)?.collect();
         Ok(s.with_name("special_chars_ratio"))
     }
 
-    fn numbers_ratio(&self, s: &Series) -> PolarsResult<Series> {
+    pub fn numbers_ratio(&self, s: &Series) -> PolarsResult<Series> {
         let s: Series = map_series(s, regex::numbers_ratio)?.collect();
         Ok(s.with_name("numbers_ratio"))
     }
 
-    fn stopwords_ratio(&self, s: &Series) -> PolarsResult<Series> {
+    pub fn stopwords_ratio(&self, s: &Series) -> PolarsResult<Series> {
         let s: Series = map_series(s, |s| regex::stopwords_ratio(s, tokenizers::tokenize1, &self.stopwords))?.collect();
         Ok(s.with_name("stopwords_ratio"))
     }
 
-    fn stopwords_ratio2(&self, s: &Series) -> PolarsResult<Series> {
+    pub fn stopwords_ratio2(&self, s: &Series) -> PolarsResult<Series> {
         let s: Series = map_series(s, |s| regex::stopwords_ratio(s, tokenizers::tokenize2, &self.stopwords))?.collect();
         Ok(s.with_name("stopwords_ratio2"))
     }
 
-    fn average_word_length(&self, s: &Series) -> PolarsResult<Series> {
+    pub fn average_word_length(&self, s: &Series) -> PolarsResult<Series> {
         let s: Series = map_series(s, regex::average_word_length)?.collect();
         Ok(s.with_name("average_word_length"))
     }
 
-    fn ends_with_code_char(&self, s: &Series) -> PolarsResult<Series> {
+    pub fn ends_with_code_char(&self, s: &Series) -> PolarsResult<Series> {
         let s: Series = map_series(s, regex::ends_with_code_char)?.collect();
         Ok(s.with_name("ends_with_code_char"))
     }
 
-    fn ends_with_punctuation(&self, s: &Series) -> PolarsResult<Series> {
+    pub fn ends_with_punctuation(&self, s: &Series) -> PolarsResult<Series> {
         let s: Series = map_series(s, regex::ends_with_punctuation)?.collect();
         Ok(s.with_name("ends_with_punctuation"))
     }
 
-    fn starts_with_three_letters(&self, s: &Series) -> PolarsResult<Series> {
+    pub fn starts_with_three_letters(&self, s: &Series) -> PolarsResult<Series> {
         let s: Series = map_series(s, regex::starts_with_three_letters)?.collect();
         Ok(s.with_name("starts_with_three_letters"))
     }
 
-    fn emoticons_count(&self, s: &Series) -> PolarsResult<Series> {
+    pub fn emoticons_count(&self, s: &Series) -> PolarsResult<Series> {
         let s: Series = map_series(s, regex::emoticons_count)?.collect();
         Ok(s.with_name("emoticons_count"))
     }
 
-    fn starts_with_at(&self, s: &Series) -> PolarsResult<Series> {
+    pub fn starts_with_at(&self, s: &Series) -> PolarsResult<Series> {
         let s: Series = map_series(s, regex::starts_with_at)?.collect();
         Ok(s.with_name("starts_with_at"))
     }
