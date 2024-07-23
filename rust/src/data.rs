@@ -4,13 +4,13 @@ use polars::prelude::*;
 
 const DATA_DIRNAME: &str = "../data-raw";
 
-const KUBERNETES_RAW_DATA_FILENAME: &str = "lines.10k.cfo.sample.2000 - Kubernetes (Slackarchive.io).csv";
+const _KUBERNETES_RAW_DATA_FILENAME: &str = "lines.10k.cfo.sample.2000 - Kubernetes (Slackarchive.io).csv";
 const KUBERNETES_DATA_FILENAME: &str = "kubernetes.csv";
 
-const LUCENE_RAW_DATA_FILENAME: &str = "lines.10k.cfo.sample.2000 - Lucene-dev mailing list.csv";
+const _LUCENE_RAW_DATA_FILENAME: &str = "lines.10k.cfo.sample.2000 - Lucene-dev mailing list.csv";
 const LUCENE_DATA_FILENAME: &str = "lucene.csv";
 
-const MOZILLA_RAW_DATA_FILENAME: &str = "lines.10k.cfo.sample.2000 - Mozilla (Firefox, Core, OS).csv";
+const _MOZILLA_RAW_DATA_FILENAME: &str = "lines.10k.cfo.sample.2000 - Mozilla (Firefox, Core, OS).csv";
 const MOZILLA_DATA_FILENAME: &str = "mozilla.csv";
 
 const EXTDATA_DIRNAME: &str = "../inst/extdata";
