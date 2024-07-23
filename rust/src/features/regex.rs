@@ -185,4 +185,53 @@ mod tests {
         let expected = vec![0., 3., 3.5, 1., 4., 4., 2.5];
         run_tests(&inputs, &expected, average_word_length);
     }
+
+    #[test]
+    fn test_ends_with_code_char() {
+        let inputs = vec!["", "This is text.", "func(x, y);", "if (true) {",
+            "func()", ":-)", "Hello ;-)", ":)", ":-(", ":(", ":-))"];
+        let expected = vec![false, false, true, true, true, false, false, false, false, false, true];
+        run_tests(&inputs, &expected, ends_with_code_char);
+    }
+
+    #[test]
+    fn test_ends_with_punctuation() {
+        let inputs = vec!["", "abc", "1", ".", "!", "?", "? ", ":", ",", "Hello!!"];
+        let expected = vec![false, false, false, true, true, true, false, true, true, true];
+        run_tests(&inputs, &expected, ends_with_punctuation);
+    }
+
+    #[test]
+    fn test_ends_either_with_punctuation_or_code_char() {
+        let inputs = vec!["", "This is text.", "func(x, y);", "if (true) {",
+            "func()", ":-)", "Hello ;-)", ":)", ":-(", ":(", ":-))",
+            "", "abc", "1", ".", "!", "?", "? ", ":", ",", "Hello!!"];
+        for input in inputs {
+            let ends_with_punctuation = ends_with_punctuation(input);
+            let ends_with_code_char = ends_with_code_char(input);
+            assert!(!ends_with_punctuation || !ends_with_code_char, "Failed for input: {}", input);
+        }
+    }
+
+    #[test]
+    fn test_starts_with_three_letters() {
+        let inputs = vec!["", "a", "a  bcde", " abcde", "      abcde"];
+        let expected = vec![false, false, true, true, true];
+        run_tests(&inputs, &expected, starts_with_three_letters);
+    }
+
+    #[test]
+    fn test_emoticons_count() {
+        let inputs = vec!["", "123", "abc", ":--)", ":-)", "Hello ;-)", "\":-)\";",
+            ":)", ";)", ":-(", ":(", ":(:)", ":) :) :)", ":):(:"];
+        let expected = vec![0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 2, 3, 2];
+        run_tests(&inputs, &expected, emoticons_count);
+    }
+
+    #[test]
+    fn test_starts_with_at() {
+        let inputs = vec!["", "abc", "123", "!@#", "@abc", "@", " @"];
+        let expected = vec![false, false, false, false, true, true, false];
+        run_tests(&inputs, &expected, starts_with_at);
+    }
 }
