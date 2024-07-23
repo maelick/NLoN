@@ -10,7 +10,7 @@ use super::tokenizers::TokenizeFunc;
 static CAPS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[A-Z]").expect("regex didn't compile"));
 static SPECIAL_CHARS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[^a-zA-Z\\d\\s]").expect("regex didn't compile"));
 static NUMBERS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("\\d").expect("regex didn't compile"));
-pub static WORDS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("\\w+").expect("regex didn't compile"));
+pub static WORDS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("[\\w']+").expect("regex didn't compile"));
 pub static WORD_SEP_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new("\\s+").expect("regex didn't compile"));
 const EMOTICONS: &str = ":-\\)|;-\\)|:\\)|;\\)|:-\\(|:\\(";
 static EMOTICONS_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(EMOTICONS).expect("regex didn't compile"));
